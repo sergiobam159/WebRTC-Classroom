@@ -1,0 +1,175 @@
+<script src="https://rtcmulticonnection.herokuapp.com/dist/RTCMultiConnection.min.js"></script>
+<script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="estilo.css">
+<body onload="hacerLista()">
+<div id="cabeza">
+<button id="IniciarClase" type="button" class="btn btn-primary">Iniciar Clase</button>
+<button id="UnirseClase" type="button" class="btn btn-primary">Unirse a Clase</button>
+
+<text id="nombreCurso" style="color: darkgray; font-family: sans-serif;">Curso:</text>
+
+<button id="asistencia" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAsistencia"> Asistencia</button>
+</div>
+<div class="modal fade " id="modalAsistencia">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="justify-content: center;">
+                <h3 class="modal-title" >Lista de Alumnos</h3> 
+            </div>
+                
+            <div class="modal-body" id="listaAlumnos"></div>
+                 <div class="modal-footer"> 
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Guardar</button>
+                 </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<hr id="hrTop">
+
+<div id="local-video">
+
+</div>
+<hr id="hrBot">
+<div id="remoto-video"> 
+
+</div>
+
+
+</body>
+<script>
+
+
+
+var connection = new RTCMultiConnection();
+
+
+connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+
+
+
+connection.session = {
+    audio: true,
+    video: true
+};
+
+connection.sdpConstraints.mandatory = {
+    OfferToReceiveAudio: true,
+    OfferToReceiveVideo: true
+};
+
+var localVideoContainer = document.getElementById("local-video");
+var remotoVideoContainer = document.getElementById("remoto-video");
+
+
+connection.onstream = function(event) {
+    document.getElementById("nombreCurso").innerHTML=predefinedRoomId;
+    var video = event.mediaElement;
+if(event.type === 'local'){
+    localVideoContainer.appendChild( video );
+}
+if(event.type === 'remote'){
+    remotoVideoContainer.appendChild( video );
+}
+
+    
+};
+
+var predefinedRoomId = 'CursoMatematica';
+
+
+
+document.getElementById('IniciarClase').onclick = function() {
+    this.disabled = true;
+    connection.open( predefinedRoomId );
+};
+
+document.getElementById('UnirseClase').onclick = function() {
+    this.disabled = true;
+    connection.join( predefinedRoomId );
+};
+
+document.getElementById('asistencia').onclick = function(){
+
+};
+
+//esta lista se obtiene desde el API
+
+const alumnos = ['ADRIANA CAROLINA HERNANDEZ MONTERROZA', 'ADRIANA MARCELA REY SANCHEZ ', 'ANGIE TATIANA FERNÁNDEZ MARTÍNEZ', 'BRIGITE POLANCO RUIZ', 'CAMILO VILLAMIZAR ARISTIZABAL', 'CAMILO RODRÍGUEZ BOTERO', 'CARLOS ANDRÉS POLO CASTELLANOS', 'CAROL RUCHINA GOMEZ GIANINE', 'DIEGO ALEJANDRO  FORERO PEÑA', 'FABIAN ANDRES FINO ANDRADE' , 'GABRIEL MAURICIO NIETO BUSTOS', 'IVONNE JOULIETTE BARRERA LOPEZ'];
+var listaAsistencia= [];
+function iniciarLista(){
+   for (var x = 0; x<alumnos.length; x++){
+    var asistencia = new Object();
+    asistencia.nombre = alumnos[x];
+   asistencia.asistio = "asistio";
+
+    listaAsistencia.push(asistencia);
+   }
+   return listaAsistencia;
+}
+
+
+function hacerLista() {
+    
+    console.log(alumnos);
+    console.log(iniciarLista());
+    var lista = document.createElement('ul');
+
+    for (var i = 0; i < listaAsistencia.length; i++) { 
+        
+        var item = document.createElement('li');
+
+        
+        item.appendChild(document.createTextNode(listaAsistencia[i].nombre));
+        var marca = document.createElement("INPUT");
+            marca.setAttribute("type", "checkbox");
+            //EL ID ES EL NOMBRE EL ALUMNO, BUSCAR EN LA MATRIZ DE ASISTENCIAS Y CAMBIAR VALOR PARA LUEGO ENVIAR A LA BD LA ASISTENCIA FINAL
+        
+            marca.setAttribute("onchange", "CambiarAsistencia()"); //MARCAR ASISTENCIAS 
+
+            marca.setAttribute("id", listaAsistencia[i].nombre);
+        if(listaAsistencia[i].asistio=="asistio"){
+            
+            marca.checked = true;
+            item.appendChild(marca);
+        }
+        if(listaAsistencia[i].asistio=="falta"){
+            
+            marca.checked = false;
+            item.appendChild(marca);
+        }
+
+        
+        lista.appendChild(item);
+    }
+
+
+
+    console.log(lista);
+    document.getElementById("listaAlumnos").appendChild(lista);
+    
+}
+//funcion para guardar el estado actual de la asistencia para luego ser registrado en la bd
+function CambiarAsistencia(){
+    console.log("asistenciaaaa")
+    
+}
+
+//FUNCION PARA DETECTAR TIPO DE USUARIO 
+//SE VERIFICARÁ CON UN SESSION 
+function identificarUsuario(){
+
+}
+
+
+
+
+</script>

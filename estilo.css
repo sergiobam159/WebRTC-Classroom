@@ -1,0 +1,68 @@
+video{
+width: 40%;
+border-radius: 20px;
+margin-inline: 25%;
+}
+button{
+    border-radius: 5px;
+}
+#local-video{
+    text-align: center;
+}
+#remoto-video{
+    height: 100px;
+    inline-size:fit-content ;
+    display: inline-block;
+}
+#remoto-video video{
+    
+    margin-inline: 0px;
+   padding-inline: 10px;
+    width: 250px;
+}
+#asistencia {
+    float:right;
+}
+body {
+    margin-top: 7px;
+    overflow-x: hidden;
+    background-color: #181818;
+ 
+}
+
+*{
+    box-sizing: border-box;
+}
+
+.modal-container{
+    display:none;
+    width: 80%;
+}
+
+#cabeza{
+    margin-block: 10px;
+    margin-inline: 20px;
+}
+ul{
+    list-style-type: none;
+}
+li{
+    border-bottom: solid;
+    border-width: 1px;
+    border-color: #181818;
+}
+input{
+    margin-right: 20px;
+    margin-top: 5px;
+    float:right;
+}
+#hrTop{
+ height: 50px;
+	box-shadow: 0px -20px 20px -20px #333;
+  
+}
+#hrBot{
+    height: 50px;
+	box-shadow:inset 0px -20px 20px -20px #333;
+  
+}
